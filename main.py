@@ -343,10 +343,8 @@ def test_ip_network_cap():
         return make_response("URL scheme must be http.", 400)
 
     bridge_cap = get_bridge_cap()
-    liveref_promise = bridge_cap.getSandstormApi().then(
-        lambda res: res.api.cast_as(grain.SandstormApi).restore(token=token)
-    )
-    liveref = liveref_promise.wait().cap
+    api = bridge_cap.getSandstormApi().wait().api
+    liveref = api.restore(token=token).wait().cap
 
     host = url.netloc.split(":")[0]
     remotehost_promise = liveref.as_interface(capnpip.IpNetwork).getRemoteHostByName(address=host)
